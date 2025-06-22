@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# File containing the JSON data
+JSON_FILE="Advanced_shell/data.json"
+
+# Extract values using jq
+name=$(jq -r '.name' "$JSON_FILE" | sed 's/.*/\u&/')  # Capitalize first letter
+height=$(jq -r '.height' "$JSON_FILE" | awk '{printf "%.1f", $1 / 10}')
+weight=$(jq -r '.weight' "$JSON_FILE" | awk '{printf "%d", $1 / 10}')
+type=$(jq -r '.types[0].type.name' "$JSON_FILE" | sed 's/.*/\u&/')
+
+# Display formatted output
+echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."

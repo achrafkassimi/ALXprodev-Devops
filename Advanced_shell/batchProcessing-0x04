@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Directory: Advanced_shell
+# File: batchProcessing-0x04
+
+# List of Pokémon names
+pokemon_list=("Bulbasaur" "Ivysaur" "Venusaur" "Charmander" "Charmeleon")
+
+# API base URL
+api_url="https://pokeapi.co/api/v2/pokemon"
+
+# Output directory for storing data
+output_dir="./pokemon_data"
+mkdir -p "$output_dir"
+
+echo "Fetching data in parallel..."
+
+# Loop through each Pokémon and fetch data in background
+for pokemon in "${pokemon_list[@]}"; do
+    (
+        # Convert to lowercase for API call
+        lower_name=$(echo "$pokemon" | tr '[:upper:]' '[:lower:]')
+        
+        # Fetch data and save to a file
+        curl -s "$api_url/$lower_name" -o "$output_dir/${lower_name}.json"
+        
+        echo "Fetched data for $pokemon"
+    ) &
+done
+
+# Wait for all background processes to finish
+wait
+
+echo "✅ All Pokémon data fetched."
