@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Directory to save files
-mkdir -p Advanced_shell
-cd Advanced_shell
+# mkdir -p Advanced_shell
+# cd Advanced_shell
 
 # API URL for Pikachu
 URL="https://pokeapi.co/api/v2/pokemon/pikachu"
