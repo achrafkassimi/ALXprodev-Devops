@@ -1,34 +1,30 @@
 #!/bin/bash
 
-# Directory: Advanced_shell
-# File: batchProcessing-0x04
+# List of Pokémon
+pokemons=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
 
-# List of Pokémon names
-pokemon_list=("Bulbasaur" "Ivysaur" "Venusaur" "Charmander" "Charmeleon")
+# Create a directory to store the Pokémon data
+mkdir -p pokemon_data
 
-# API base URL
-api_url="https://pokeapi.co/api/v2/pokemon"
+# Function to fetch data
+fetch_data() {
+    pokemon=$1
+    echo "Fetching data for $pokemon..."
+    curl -s "https://pokeapi.co/api/v2/pokemon/$pokemon" -o "pokemon_data/$pokemon.json"
 
-# Output directory for storing data
-output_dir="./pokemon_data"
-mkdir -p "$output_dir"
+    if [ $? -eq 0 ]; then
+        echo "Saved data to pokemon_data/$pokemon.json ✅"
+    else
+        echo "Error fetching data for $pokemon" >> errors.txt
+    fi
+}
 
-echo "Fetching data in parallel..."
-
-# Loop through each Pokémon and fetch data in background
-for pokemon in "${pokemon_list[@]}"; do
-    (
-        # Convert to lowercase for API call
-        lower_name=$(echo "$pokemon" | tr '[:upper:]' '[:lower:]')
-        
-        # Fetch data and save to a file
-        curl -s "$api_url/$lower_name" -o "$output_dir/${lower_name}.json"
-        
-        echo "Fetched data for $pokemon"
-    ) &
+# Loop through each Pokémon and fetch data in parallel
+for pokemon in "${pokemons[@]}"; do
+    fetch_data $pokemon &  # Run the function in the background
 done
 
 # Wait for all background processes to finish
 wait
 
-echo "✅ All Pokémon data fetched."
+echo "All data fetched and saved."
