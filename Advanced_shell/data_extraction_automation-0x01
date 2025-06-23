@@ -11,7 +11,6 @@
 
 # # Display formatted output
 # echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
-
 #!/bin/bash
 
 # Extract data from data.json using jq
@@ -20,5 +19,9 @@ height=$(jq -r '.height' data.json)
 weight=$(jq -r '.weight' data.json)
 type=$(jq -r '.types[0].type.name' data.json)
 
-# Print the extracted data in a human-readable format
-echo "$name is of type $type, weighs $weight kg, and is $height m tall."
+# Format the height and weight to match the required output format (e.g., "6kg" instead of "6")
+formatted_height=$(echo "scale=1; $height / 10" | bc)  # Convert height to meters (e.g., from cm to m)
+formatted_weight=$(echo "scale=1; $weight / 10" | bc)  # Convert weight to kilograms (e.g., from hectograms to kg)
+
+# Print the extracted data in the required format
+echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
